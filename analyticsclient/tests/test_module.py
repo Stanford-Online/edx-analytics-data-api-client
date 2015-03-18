@@ -66,7 +66,7 @@ class ModulesTests(ClientTestCase):
                 'part_id': self.module_id.replace('/', '-') + '-part1',
                 'correct': True,
                 'first_response_count': 2,
-                'final_response_count': 2,
+                'last_response_count': 2,
                 'value_id': 'choice_4',
                 'answer_value_text': 'User chose this answer.',
                 'answer_value_numeric': None,
