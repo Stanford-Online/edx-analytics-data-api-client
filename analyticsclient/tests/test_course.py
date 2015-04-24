@@ -187,6 +187,14 @@ class CoursesTests(ClientTestCase):
         )
         self.assertEqual(body, self.course.videos(start_date=date, end_date=date))
 
+        uri = self.get_api_url('courses/{0}/videos/'.format(self.course_id))
+        httpretty.register_uri(
+            httpretty.GET,
+            '{0}'.format(uri),
+            body=json.dumps(body),
+        )
+        self.assertEqual(body, self.course.videos())
+
     @httpretty.activate
     def test_video_seek_times(self):
 
@@ -208,6 +216,14 @@ class CoursesTests(ClientTestCase):
         )
         self.assertEqual(body, self.course.video_seek_times(video_id=video_id, start_date=date, end_date=date))
 
+        uri = self.get_api_url('courses/{0}/videos/{1}/seek_times/'.format(self.course_id, video_id))
+        httpretty.register_uri(
+            httpretty.GET,
+            '{0}?video_id={1}'.format(uri, video_id),
+            body=json.dumps(body),
+        )
+        self.assertEqual(body, self.course.video_seek_times(video_id=video_id))
+
     @httpretty.activate
     def test_on_campus_data(self):
 
@@ -228,3 +244,11 @@ class CoursesTests(ClientTestCase):
             body=json.dumps(body),
         )
         self.assertEqual(body, self.course.on_campus_data(start_date=date, end_date=date))
+
+        uri = self.get_api_url('courses/{0}/on_campus_student_data/'.format(self.course_id))
+        httpretty.register_uri(
+            httpretty.GET,
+            '{0}'.format(uri),
+            body=json.dumps(body),
+        )
+        self.assertEqual(body, self.course.on_campus_data())
