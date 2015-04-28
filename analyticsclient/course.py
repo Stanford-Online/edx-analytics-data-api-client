@@ -109,6 +109,29 @@ class Course(object):
         """ Get the settings used by the pipeline to process the logs. """
         path = 'courses/{0}/videos/settings/'.format(self.course_id)
         return self.client.get(path, data_format=data_format)
+    
+    def video_summary(self, video_id, start_date=None, end_date=None,
+                      data_format=DF.JSON):
+        """
+        Summary information about a particular video
+        """
+        path = 'courses/{0}/videos/{1}/summary/'.format(
+            self.course_id,
+            video_id
+        )
+        
+        params = {}
+        if start_date:
+            params['start_date'] = start_date
+
+        if end_date:
+            params['end_date'] = end_date
+
+        querystring = urllib.urlencode(params)
+        if querystring:
+            path += '?{0}'.format(querystring)
+
+        return self.client.get(path, data_format=data_format)
 
     def videos(self, start_date=None, end_date=None, data_format=DF.JSON):
         """
