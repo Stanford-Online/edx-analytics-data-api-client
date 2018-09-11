@@ -30,7 +30,7 @@ class Client(object):
     DATE_FORMAT = '%Y-%m-%d'
     DATETIME_FORMAT = DATE_FORMAT + 'T%H%M%S'
 
-    def __init__(self, base_url, auth_token=None, timeout=5.0):
+    def __init__(self, base_url, auth_token=None, timeout=10.0):
         """
         Initialize the client.
 
