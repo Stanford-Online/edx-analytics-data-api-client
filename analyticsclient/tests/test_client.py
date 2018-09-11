@@ -5,7 +5,7 @@ import mock
 import requests.exceptions
 from testfixtures import log_capture
 
-from analyticsclient.constants import data_format
+from analyticsclient.constants import data_formats, http_methods
 from analyticsclient.client import Client
 from analyticsclient.exceptions import ClientError, TimeoutError
 from analyticsclient.tests import ClientTestCase
@@ -46,6 +46,11 @@ class ClientTests(ClientTestCase):
         httpretty.register_uri(httpretty.GET, self.test_url, body=json.dumps(data))
         self.assertEquals(self.client.get(self.test_endpoint), data)
 
+    def test_post(self):
+        data = {'foo': 'bar'}
+        httpretty.register_uri(httpretty.POST, self.test_url, body=json.dumps(data))
+        self.assertEquals(self.client.request(http_methods.POST, self.test_endpoint), data)
+
     def test_get_invalid_response_body(self):
         """ Verify that client raises a ClientError if the response body cannot be properly parsed. """
 
@@ -71,16 +76,28 @@ class ClientTests(ClientTestCase):
         timeout = None
         headers = {'Accept': 'application/json'}
 
-        self.assertRaises(TimeoutError, self.client._request, self.test_endpoint, timeout=timeout)
+        self.assertRaises(
+            TimeoutError,
+            self.client._request,
+            http_methods.GET,
+            self.test_endpoint,
+            timeout=timeout
+        )
         msg = 'Response from {0} exceeded timeout of {1}s.'.format(self.test_endpoint, self.client.timeout)
         lc.check(('analyticsclient.client', 'ERROR', msg))
         lc.clear()
-        mock_get.assert_called_once_with(url, headers=headers, timeout=self.client.timeout)
+        mock_get.assert_called_once_with(url, headers=headers, timeout=self.client.timeout, params={})
         mock_get.reset_mock()
 
         timeout = 10
-        self.assertRaises(TimeoutError, self.client._request, self.test_endpoint, timeout=timeout)
-        mock_get.assert_called_once_with(url, headers=headers, timeout=timeout)
+        self.assertRaises(
+            TimeoutError,
+            self.client._request,
+            http_methods.GET,
+            self.test_endpoint,
+            timeout=timeout
+        )
+        mock_get.assert_called_once_with(url, headers=headers, timeout=timeout, params={})
         msg = 'Response from {0} exceeded timeout of {1}s.'.format(self.test_endpoint, timeout)
         lc.check(('analyticsclient.client', 'ERROR', msg))
 
@@ -92,11 +109,19 @@ class ClientTests(ClientTestCase):
         self.assertDictEqual(response, {})
 
         httpretty.register_uri(httpretty.GET, self.test_url, body='not-json')
-        response = self.client.get(self.test_endpoint, data_format=data_format.CSV)
+        response = self.client.get(self.test_endpoint, data_format=data_formats.CSV)
         self.assertEquals(httpretty.last_request().headers['Accept'], 'text/csv')
         self.assertEqual(response, 'not-json')
 
         httpretty.register_uri(httpretty.GET, self.test_url, body='{}')
-        response = self.client.get(self.test_endpoint, data_format=data_format.JSON)
+        response = self.client.get(self.test_endpoint, data_format=data_formats.JSON)
         self.assertEquals(httpretty.last_request().headers['Accept'], 'application/json')
         self.assertDictEqual(response, {})
+
+    def test_unsupported_method(self):
+        self.assertRaises(
+            ValueError,
+            self.client._request,
+            http_methods.PATCH,
+            self.test_endpoint
+        )

@@ -1,21 +1,22 @@
-from distutils.core import setup
+from setuptools import setup
+from analyticsclient import __version__ as VERSION
 
 setup(
     name='edx-analytics-data-api-client',
-    version='0.6.1',
+    version=VERSION,
     packages=['analyticsclient', 'analyticsclient.constants'],
     url='https://github.com/edx/edx-analytics-data-api-client',
     description='Client used to access edX analytics data warehouse',
     long_description=open('README.rst').read(),
     install_requires=[
-        "requests==2.2.0",
+        "requests",
     ],
     tests_require=[
-        "coverage==3.7.1",
-        "nose==1.3.3",
-        "httpretty==0.8.0",
-        "pep8==1.5.7",
-        "pylint==1.2.1",
-        "pep257==0.3.2"
+        "coverage",
+        "nose",
+        "httpretty",
+        "pep8",
+        "pylint",
+        "pep257"
     ]
 )

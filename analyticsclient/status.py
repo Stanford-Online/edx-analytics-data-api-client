@@ -1,19 +1,9 @@
+from analyticsclient.base import BaseEndpoint
 from analyticsclient.exceptions import ClientError
 
 
-class Status(object):
-    """ API server status. """
-
-    def __init__(self, client):
-        """
-        Initialize the Status.
-
-        Arguments:
-
-            client (analyticsclient.client.Client): The client to use to access remote resources.
-
-        """
-        self.client = client
+class Status(BaseEndpoint):
+    """API server status."""
 
     @property
     def alive(self):
