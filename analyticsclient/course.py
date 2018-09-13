@@ -6,7 +6,7 @@ from analyticsclient.exceptions import InvalidRequestError
 
 
 class Course(object):
-    """ Course-related analytics. """
+    """Course-related analytics."""
 
     def __init__(self, client, course_id):
         """
@@ -103,6 +103,26 @@ class Course(object):
             data_format (str): Format in which data should be returned
         """
         path = 'courses/{0}/problems/'.format(self.course_id)
+        return self.client.get(path, data_format=data_format)
+
+    def problems_and_tags(self, data_format=DF.JSON):
+        """
+        Get the problems for the course with assigned tags.
+
+        Arguments:
+            data_format (str): Format in which data should be returned
+        """
+        path = 'courses/{0}/problems_and_tags/'.format(self.course_id)
+        return self.client.get(path, data_format=data_format)
+
+    def reports(self, report_name, data_format=DF.JSON):
+        """
+        Get CSV download information for a particular report in the course.
+
+        Arguments:
+            report_name (str): Report name, e.g. "problem_response"
+        """
+        path = 'courses/{0}/reports/{1}/'.format(self.course_id, report_name)
         return self.client.get(path, data_format=data_format)
 
     def videos(self, data_format=DF.JSON):
