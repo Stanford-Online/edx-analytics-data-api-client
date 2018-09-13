@@ -31,7 +31,7 @@ class Client(object):
     METHOD_GET = 'GET'
     METHOD_POST = 'POST'
 
-    def __init__(self, base_url, auth_token=None, timeout=0.25):
+    def __init__(self, base_url, auth_token=None, timeout=10):
         """
         Initialize the client.
 
